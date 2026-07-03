@@ -1,5 +1,7 @@
 
+using KASHOP.BLL.Services;
 using KASHOP.DAL.Data;
+using KASHOP.DAL.Repository;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -22,6 +24,8 @@ namespace KASHOP.PL
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
             builder.Services.AddLocalization(options => options.ResourcesPath = "");
             const string defaultCulture = "en";

@@ -1,4 +1,5 @@
-﻿using KASHOP.DAL.Data;
+﻿using KASHOP.BLL.Services;
+using KASHOP.DAL.Data;
 using KASHOP.DAL.Dto.Request;
 using KASHOP.DAL.Dto.Response;
 using KASHOP.DAL.Models;
@@ -15,30 +16,28 @@ namespace KASHOP.PL.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IStringLocalizer<SharedResource> _localizer;
-        public CategoriesController(ApplicationDbContext context, IStringLocalizer<SharedResource> localizer)
+        private readonly ICategoryService _categoryService;
+
+        public CategoriesController(IStringLocalizer<SharedResource> localizer, ICategoryService categoryService)
         {
-            _context = context;
             _localizer = localizer;
+            _categoryService = categoryService;
         }
         [HttpGet]
 
-        public IActionResult GetAllCategories()
+        public async Task<IActionResult> GetAllCategories()
         {
-            var categories = _context.Categories.Include(c => c.Translations).ToList();
-            var categoryResponses = categories.Adapt<List<CategoryResponse>>();
+            var categories =await _categoryService.GetAll();
 
-            return Ok(new { Message = _localizer["Success"].Value, categoryResponses });
+
+            return Ok(new { Message = _localizer["Success"].Value, categories });
         }
         [HttpPost]
-        public IActionResult Create(CategoryRequest request)
+        public async Task<IActionResult> Create(CategoryRequest request)
         {
-            var category = request.Adapt<Category>();
-            _context.Categories.Add(category);
-            _context.SaveChanges();
+            var response = await _categoryService.CreateCategory(request);
             return Ok();
-
         }
     }
 }

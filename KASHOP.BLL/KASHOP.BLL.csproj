@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KASHOP.DAL\KASHOP.DAL.csproj" />
+	  <PackageReference Include="Mapster" Version="7.4.0" />
+
   </ItemGroup>
 
 </Project>
