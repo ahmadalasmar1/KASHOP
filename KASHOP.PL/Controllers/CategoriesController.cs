@@ -1,7 +1,12 @@
 ﻿using KASHOP.DAL.Data;
+using KASHOP.DAL.Dto.Request;
+using KASHOP.DAL.Dto.Response;
+using KASHOP.DAL.Models;
 using KASHOP.PL.Resources;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace KASHOP.PL.Controllers
@@ -19,9 +24,21 @@ namespace KASHOP.PL.Controllers
         }
         [HttpGet]
 
-        public IActionResult Index()
+        public IActionResult GetAllCategories()
         {
-            return Ok(_localizer["Success"].Value);
+            var categories = _context.Categories.Include(c => c.Translations).ToList();
+            var categoryResponses = categories.Adapt<List<CategoryResponse>>();
+
+            return Ok(new { Message = _localizer["Success"].Value, categoryResponses });
+        }
+        [HttpPost]
+        public IActionResult Create(CategoryRequest request)
+        {
+            var category = request.Adapt<Category>();
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+            return Ok();
+
         }
     }
 }
