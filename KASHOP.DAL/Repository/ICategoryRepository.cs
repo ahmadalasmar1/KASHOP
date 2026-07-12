@@ -7,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace KASHOP.DAL.Repository
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IGenericRepository<Category>
     {
-        Task<List<Category>> GetAll();
-        Task<Category> Create(Category category);
-
     }
 }
